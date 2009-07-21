@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>data/rapid-down.png</file>
+        <file>data/filesave.png</file>
+        <file>data/fileopen.png</file>
+        <file>data/first.png</file>
+        <file>data/last.png</file>
+        <file>data/settings.png</file>
+        <file>data/quit.png</file>
+        <file>data/close.png</file>
+        <file>data/start.png</file>
+        <file>data/stop.png</file>
+        <file>data/qt.png</file>
+        <file>data/edit-copy.png</file>
+        <file>data/edit-paste.png</file>
+        <file>data/edit-cut.png</file>
+        <file>data/edit-delete.png</file>
+        <file>data/edit-select-all.png</file>
+        <file>data/ok.png</file>
+        <file>data/cancel.png</file>
+        <file>data/open-folder.png</file>
+        <file>data/list-add.png</file>
+    </qresource>
+</RCC>

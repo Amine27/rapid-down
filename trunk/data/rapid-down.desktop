@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Rapidshare Downloader
+GenericName=Rapidshare File Download
+Comment=Download file from YouTube
+Icon=rapid-down
+Exec=rapid-down
+Terminal=false
+Categories=Network; Qt;

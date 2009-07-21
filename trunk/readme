@@ -1,0 +1,46 @@
+Requirements
+-------------------
+ 
+* Qt4
+     On Debian or Ubuntu, install package 'libqt4-gui' and it's dependencies.
+
+* The Wget script.
+     Make sure that 'wget' is installed, in Gnu/Linux with is command 'which wget'.
+
+
+How to use
+-------------------
+To use this program you must configure your premium acount like this :
+	1- In the settings / configuration menu enable: 
+		"Direct dsetCurrentRowownloads, requested files are saved without redirection via RapidShare"
+	2- In the server systems enable: 
+		"Random selection of Server-System #1" and "Random selection of Server-System #2"
+	3- Save the new settings
+	
+	
+Running Rapidshare Downloader
+-------------------
+
+If you have all the needed requirements installed, just extract Rapidshare downloader somewhere and, in a 
+terminal, cd to it's folder, and type './rapid-down' in order to execute it.
+
+
+Installing Rapidshare Downloader
+--------------------
+
+To install Rapidshare Downloader run "./install /opt". Once finished, you will be able to run 
+Rapidshare Downloader from the menu. To install it somewhere else run just "./install" and 
+it will let you select between some other options.
+
+
+More information
+---------------------
+
+For more detailed (and up to date) instructions see <https://www.qt-apps.org>.
+
+
+Troubleshooting
+--------------------
+
+If you have any problem with Rapidshare Downloader don't hesitate to contact me on <amineroukh@gmail.com>.
+
