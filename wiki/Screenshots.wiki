@@ -5,4 +5,10 @@ Here are some screenshots of Rapidshare Downloader in action.
 
 = Sreenshots =
 
-[http://code.google.com/ http://code.google.com/images/code_sm.png]
+Main program
+
+[http://img194.imageshack.us/img194/4160/rapiddown042z.png http://code.google.com/images/code_sm.png]
+
+Preferences of program
+
+[http://img194.imageshack.us/img194/4160/rapiddown042z.png http://code.google.com/images/code_sm.png]
