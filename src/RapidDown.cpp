@@ -21,6 +21,7 @@
 
 #include "RapidDown.h"
 #include "optionsform.h"
+#include "historyform.h"
 #include "aboutform.h"
 #include "trayicon.h"
 
@@ -82,6 +83,11 @@ void RapidDown::createActions()
     optionsAct->setStatusTip( tr( "Preferences of this program" ) );
     connect( optionsAct, SIGNAL( triggered() ), this, SLOT( saveSettings() ) );
 
+    historyAct = new QAction( QIcon( ":/data/history.png" ), tr( "&History" ), this );
+    historyAct->setShortcut( tr( "Ctrl+H" ) );
+    historyAct->setStatusTip( tr( "Downloads History" ) );
+    connect( historyAct, SIGNAL( triggered() ), this, SLOT( showHisory() ) );
+
     aboutQtAct = new QAction( QIcon( ":/data/qt.png" ), tr( "About &Qt" ), this );
     aboutQtAct->setStatusTip( tr( "About Qt library" ) );
     connect( aboutQtAct, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
@@ -100,6 +106,7 @@ void RapidDown::createMenus()
 
     prefMenu = menuBar()->addMenu( tr( "&Settings" ) );
     prefMenu->addAction( optionsAct );
+    prefMenu->addAction( historyAct );
 
     helpMenu = menuBar()->addMenu( tr( "&Help" ) );
     helpMenu->addAction( aboutAct );
@@ -1090,6 +1097,17 @@ void RapidDown::saveSettings()
     if ( perefeDialog.exec() )
     {
         readSettings();
+    }
+}
+
+void RapidDown::showHisory()
+{
+    History historyDialog;
+
+    historyDialog.show();
+    if ( historyDialog.exec() )
+    {
+        //readSettings();
     }
 }
 

@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPTIONSWINDOW_H
-#define OPTIONSWINDOW_H
+#ifndef OPTIONSFORM_H
+#define OPTIONSFORM_H
 
 #include <QtGui>
 #include <QProcess>
