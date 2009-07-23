@@ -68,8 +68,8 @@ struct Settings
 
 #endif
 
-#ifndef HEADER_RAPIDDOWN
-#define HEADER_RAPIDDOWN
+#ifndef RAPIDDOWN_H
+#define RAPIDDOWN_H
 
 #define MAXDOWNLOADS 1
 
@@ -91,6 +91,7 @@ protected:
 private slots :
     void about();
     void saveSettings();
+    void showHisory();
     void updateName();
     void startDown();
     void abortDown();
@@ -133,6 +134,7 @@ private :
     QAction *exitAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
+    QAction *historyAct;
 
     long long actualSizeInBytes;
     float actualSize;

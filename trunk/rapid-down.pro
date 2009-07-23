@@ -13,17 +13,20 @@ HEADERS += src/aboutform.h \
     src/optionsform.h \
     src/editlist.h \
     src/RapidDown.h \
-    src/trayicon.h
+    src/trayicon.h \
+    src/historyform.h
 FORMS += src/aboutForm.ui \
     src/editList.ui \
     src/optionsForm.ui \
-    src/mainForm.ui
+    src/mainForm.ui \
+    src/historyForm.ui
 SOURCES += src/aboutform.cpp \
     src/optionsform.cpp \
     src/editlist.cpp \
     src/main.cpp \
     src/RapidDown.cpp \
-    src/trayicon.cpp
+    src/trayicon.cpp \
+    src/historyform.cpp
 RESOURCES += rapid-down.qrc
 TRANSLATIONS += ts/11-tp-zclass.pro_ar.ts \
     ts/11-tp-zclass.pro_fr.ts
