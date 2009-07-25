@@ -11,7 +11,6 @@ class TrayIcon : public QWidget
 
 public:
     TrayIcon(RapidDown* parent);
-    void createTrayIconMenu();
     void setTrayIconStats(QString fileName, QString speed, QString eta, QString downloaded, QString progress);
     void finished(QString fileName, QString DownloadedSize);
     void Allfinished(int downloadedUrls);
@@ -23,6 +22,8 @@ private slots:
     void iconActivated( QSystemTrayIcon::ActivationReason reason );
 
 private:
+    void createTrayIconMenu();
+
     QMenu *trayIconMenu;
     RapidDown* m_rapidDown;
 };

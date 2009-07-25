@@ -29,8 +29,6 @@ aboutForm::aboutForm(QWidget* parent, Qt::WFlags fl)
     logoText->setText ( tr ( "<h3>Rapidshare Downloader 0.5.0</h3>" ) );
 
     connect ( cancelButton, SIGNAL ( clicked() ), this, SLOT ( reject() ) );
-
-    setWindowTitle ( tr ( "About Rapidshare Downloader" ) );
 }
 
 aboutForm::~aboutForm()

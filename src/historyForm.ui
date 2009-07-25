@@ -65,11 +65,8 @@
      </item>
      <item>
       <widget class="QLineEdit" name="m_findEdit">
-       <property name="inputMask">
-        <string/>
-       </property>
        <property name="text">
-        <string/>
+        <string>Find...</string>
        </property>
       </widget>
      </item>

@@ -706,6 +706,9 @@ void RapidDown::processFinished( int exitCode, QProcess::ExitStatus exitStatus )
     {
         if ( exitCode ==0 )
         {
+            downFileURL = m_durl->text();
+            downFileName = m_durl->text().section( '/', -1 );  // str == "file.zip"
+
             if( !isVisible() && pref.showPopups )
                 m_trayIcon->finished( downFileName, m_downloadedMB->text() );
 
@@ -715,6 +718,14 @@ void RapidDown::processFinished( int exitCode, QProcess::ExitStatus exitStatus )
             m_speed->setText( "Speed:" );
             m_eta->setText( "Finishing in:" );
             m_downloadedMB->setText( "Downloaded MBytes:" );
+
+            // Write downloaded file to the history
+            QString date;
+            date.setNum(QDateTime::currentDateTime().toTime_t());
+            History historyDialog;
+            historyDialog.readHistory();
+            historyDialog.readHistoryItem(date, downFileName, downloaded, downFileURL);
+            historyDialog.writeHistory();
         }
         else //if ( exitCode > 0 )
         {
@@ -722,7 +733,6 @@ void RapidDown::processFinished( int exitCode, QProcess::ExitStatus exitStatus )
             errCode = -2;
         }
     }
-//   qDebug() << msg;
     statusBar()->showMessage(( msg ), 5000 );
 
     QProcess *rmPro = new QProcess();
@@ -887,7 +897,6 @@ void RapidDown::displayProgressMsg()
         {
             result = msg.data();
             actualP = process[i];
-//       qDebug() << "actual:" <<i;
         }
     }
     if (result.length() <1)
@@ -939,18 +948,13 @@ void RapidDown::displayProgressMsg()
 
     pos =  result.indexOf( "%" );
     if ( pos > 0 )
-    {
-        // Here for the tray icon
-        QString value;
-        QString mbs;
-        QString mbsToday;
+    {        
+        progress = result.mid( pos - 3, 3 );
+        progress.remove( " " );
 
-        value = result.mid( pos - 3, 3 );
-        value.remove( " " );
-
-        if ( !value.isEmpty() )
+        if ( !progress.isEmpty() )
         {
-            actualPercent = value.toInt();
+            actualPercent = progress.toInt();
             progressBar->setValue( actualPercent );
 
             if ( sizeFound )
@@ -958,20 +962,20 @@ void RapidDown::displayProgressMsg()
                 if ( progressText->text().contains( "MBytes" ) )
                 {
                     actualSize = ( float )( actualSizeInBytes / ( 1024.0 * 1024.0 ) ) * 0.01 * actualPercent;
-                    mbs.setNum( actualSize, 'g', 4 );
-                    mbsToday.setNum(( actualSize/1024.0 ) + pref.todayDownloaded, 'g', 4 );
-                    m_downloadedMB->setText( "Downloaded MBytes: " + mbs );
-                    m_downloadedToday->setText( "Downloaded today, GBytes: " + mbsToday );
-                    mbs += "MB"; // For the tray icon
+                    downloaded.setNum( actualSize, 'g', 4 );
+                    downloadedToday.setNum(( actualSize/1024.0 ) + pref.todayDownloaded, 'g', 4 );
+                    m_downloadedMB->setText( "Downloaded MBytes: " + downloaded );
+                    m_downloadedToday->setText( "Downloaded today, GBytes: " + downloadedToday );
+                    downloaded += "MB"; // For the tray icon
                 }
                 else if ( progressText->text().contains( "KBytes" ) )
                 {
                     actualSize = ( float )( actualSizeInBytes / ( 1024.0 ) ) * 0.01 * actualPercent;
-                    mbs.setNum( actualSize, 'g', 4 );
-                    mbsToday.setNum(( actualSize/1024.0 ) + pref.todayDownloaded, 'g', 4 );
-                    m_downloadedMB->setText( "Downloaded KBytes: " + mbs );
-                    m_downloadedToday->setText( "Downloaded today (GB): " + mbsToday );
-                    mbs += "KB";
+                    downloaded.setNum( actualSize, 'g', 4 );
+                    downloadedToday.setNum(( actualSize/1024.0 ) + pref.todayDownloaded, 'g', 4 );
+                    m_downloadedMB->setText( "Downloaded KBytes: " + downloaded );
+                    m_downloadedToday->setText( "Downloaded today (GB): " + downloadedToday );
+                    downloaded += "KB";
                 }
             }
         }
@@ -1006,7 +1010,7 @@ void RapidDown::displayProgressMsg()
             m_eta->setText( "Finishing in: " + eta );
 
 
-        m_trayIcon->setTrayIconStats(downFileName, speed, eta, mbs, value);
+        m_trayIcon->setTrayIconStats(downFileNameAbr, speed, eta, downloaded, progress);
 
     }
 }
@@ -1071,16 +1075,18 @@ void RapidDown::updateName()
 
         if ( m_durl->text().count() > 25 )
         {
-            QString str = m_durl->text().section( '/', -1 );  // str == "file.zip"
-            m_name->setText( str );
+            downFileURL = m_durl->text();
+            downFileName = m_durl->text().section( '/', -1 );  // str == "file.zip"
+            m_name->setText( downFileName );
 
-            if(str.count() > 25)
+            downFileNameAbr = downFileName;
+
+            if(downFileNameAbr.count() > 25)
             {
-                str.resize(22);
-                str.append("...");
+                downFileNameAbr.resize(22);
+                downFileNameAbr.append("...");
             }
 
-            downFileName = str;
         }
     }
     else
@@ -1104,10 +1110,11 @@ void RapidDown::showHisory()
 {
     History historyDialog;
 
+    historyDialog.readHistory();
     historyDialog.show();
     if ( historyDialog.exec() )
     {
-        //readSettings();
+        //
     }
 }
 
