@@ -69,8 +69,6 @@ Preferences::Preferences( QWidget* parent, Qt::WFlags fl )
 
     connect( pushOk, SIGNAL( clicked() ), this, SLOT( saveSettings() ) );
     connect( pushCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
-
-    setWindowTitle( tr( "Preferences" ) );
 }
 
 Preferences::~Preferences()

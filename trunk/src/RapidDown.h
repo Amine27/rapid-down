@@ -150,7 +150,12 @@ private :
     short runProcesses;
     EditList *eList;
     QString appDir;
+    QString downFileNameAbr;
     QString downFileName;
+    QString progress;
+    QString downloaded;
+    QString downloadedToday;
+    QString downFileURL;
 
 public:
     QClipboard *clipboard;
