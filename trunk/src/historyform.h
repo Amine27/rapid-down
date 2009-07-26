@@ -38,17 +38,19 @@ public:
     ~History();
 
 private slots:
-	void findHundler(QString);
+    void findHundler(QString);
+    void clearHistory();
 
 protected:
 
 private:
+    QFile file;
+
     QXmlStreamWriter xmlWriter;
     QXmlStreamReader xmlReader;
 
-    SortFilterProxyModel *proxyModel;
+    QSortFilterProxyModel *proxyModel;
     QStandardItemModel *model;
 };
 
 #endif
-

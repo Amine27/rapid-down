@@ -26,7 +26,7 @@ History::History(QWidget* parent, Qt::WFlags fl)
 {
     setupUi(this);
 
-    proxyModel = new SortFilterProxyModel;
+    proxyModel = new QSortFilterProxyModel;
     proxyModel->setDynamicSortFilter(true);
 
     model = new QStandardItemModel(0, 4, parent);
@@ -49,20 +49,20 @@ History::History(QWidget* parent, Qt::WFlags fl)
 
     proxyModel->setSourceModel(model);
     m_tableView->setModel(proxyModel);
-	
-	connect(m_findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(findHundler(QString)));
+
+    connect(m_findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(findHundler(QString)));
+    connect(m_clearHistory, SIGNAL(clicked()), this, SLOT(clearHistory()));
+
+    file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
 }
 
 History::~History()
 {
 }
 
-
 // Read history from XML file
 void History::readHistory()
 {
-     QFile file;
-     file.setFileName(QDir::homePath()+"/.RapidDownHistory.xml");
      if (!file.open(QIODevice::ReadOnly))
      {
          /*QMessageBox::warning(this, tr("Download History"),
@@ -115,18 +115,17 @@ void History::readHistoryItem(QString date, QString fileName, QString fileSize, 
     QDateTime dateTime;dateTime.setTime_t(date.toUInt());
     date = dateTime.toString("dd/MM/yyyy hh:mm:ss");
 
-    model->insertRow(0);
-    model->setData(model->index(0, 0), date);
-    model->setData(model->index(0, 1), fileName);
-    model->setData(model->index(0, 2), fileSize);
-    model->setData(model->index(0, 3), url);
+    int row = model->rowCount();
+    model->insertRow(row);
+    model->setData(model->index(row, 0), date);
+    model->setData(model->index(row, 1), fileName);
+    model->setData(model->index(row, 2), fileSize);
+    model->setData(model->index(row, 3), url);
 }
 
 // Write history into XML file
 void History::writeHistory()
 {
-    QFile file;
-    file.setFileName(QDir::homePath()+"/.RapidDownHistory.xml");
     if (!file.open(QIODevice::WriteOnly))
     {
         QMessageBox::warning(this, tr("Download History"),
@@ -182,4 +181,35 @@ void History::findHundler(QString text)
 
     proxyModel->setFilterKeyColumn(-1);
     proxyModel->setFilterRegExp(regExp);
+}
+
+void History::clearHistory()
+{
+    if(model->rowCount() == 0)
+    {
+         QMessageBox::information(this, tr("Clear History"),
+                              tr("There is nothing to clear"),
+                              QMessageBox::Ok);
+         return;
+    }
+
+    int ret = QMessageBox::warning(this, tr("Clear History?"),
+                              tr("Are you sure you want to clear downloads history?"),
+                              QMessageBox::Yes | QMessageBox::No,
+                              QMessageBox::No);
+
+    if (ret == QMessageBox::No)
+        return;
+
+
+    if (!file.remove())
+    {
+        QMessageBox::warning(this, tr("Clear History"),
+                              tr("Cannot remove file %1:\n%2.")
+                              .arg(file.fileName())
+                              .arg(file.errorString()));
+        return;
+    }
+
+    model->removeRows(0, model->rowCount());
 }
