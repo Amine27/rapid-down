@@ -49,6 +49,8 @@ History::History(QWidget* parent, Qt::WFlags fl)
 
     proxyModel->setSourceModel(model);
     m_tableView->setModel(proxyModel);
+	
+	connect(m_findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(findHundler(QString)));
 }
 
 History::~History()
@@ -170,4 +172,14 @@ void History::writeHisoryItem(QStandardItem *item)
         xmlWriter.writeTextElement("fileSize", item->text());
     else if(item->column() == 3)
         xmlWriter.writeTextElement("url", item->text());
+}
+
+void History::findHundler(QString text)
+{
+    QRegExp::PatternSyntax syntax = QRegExp::PatternSyntax(2);
+    Qt::CaseSensitivity caseSensitivity = Qt::CaseInsensitive;
+    QRegExp regExp(text, caseSensitivity, syntax);
+
+    proxyModel->setFilterKeyColumn(-1);
+    proxyModel->setFilterRegExp(regExp);
 }
