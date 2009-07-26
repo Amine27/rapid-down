@@ -38,6 +38,7 @@ public:
     ~History();
 
 private slots:
+	void findHundler(QString);
 
 protected:
 
