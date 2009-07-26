@@ -17,7 +17,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QComboBox" name="m_filtre">
+      <widget class="QComboBox" name="m_filter">
        <item>
         <property name="text">
          <string>All Downloads</string>
@@ -25,7 +25,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Tody</string>
+         <string>Today</string>
         </property>
        </item>
        <item>
@@ -73,7 +73,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableWidget" name="m_tableWidget"/>
+    <widget class="QTableView" name="m_tableView"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -83,7 +83,7 @@
         <string>Clera History</string>
        </property>
        <property name="icon">
-        <iconset resource="../rapid-down.qrc">
+        <iconset>
          <normaloff>:/data/clear-history.png</normaloff>:/data/clear-history.png</iconset>
        </property>
       </widget>
@@ -107,7 +107,7 @@
         <string>Close</string>
        </property>
        <property name="icon">
-        <iconset resource="../rapid-down.qrc">
+        <iconset>
          <normaloff>:/data/close.png</normaloff>:/data/close.png</iconset>
        </property>
       </widget>
@@ -116,9 +116,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../rapid-down.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>m_close</sender>
