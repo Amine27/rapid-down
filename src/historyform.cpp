@@ -26,26 +26,41 @@ History::History(QWidget* parent, Qt::WFlags fl)
 {
     setupUi(this);
 
-    QStringList labels;
-    labels << tr("Date") << tr("File name") << tr("Size") << tr("URL");
+    proxyModel = new SortFilterProxyModel;
+    proxyModel->setDynamicSortFilter(true);
 
-    m_tableWidget->setColumnCount(4);
-    m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_tableWidget->setHorizontalHeaderLabels(labels);
-    m_tableWidget->horizontalHeader()->setStretchLastSection(true);
-    m_tableWidget->verticalHeader()->hide();
-    m_tableWidget->setShowGrid(false);
+    model = new QStandardItemModel(0, 4, parent);
+
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Date"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("File name"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Size"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("URL"));
+
+    m_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_tableView->horizontalHeader()->setStretchLastSection(true);
+    m_tableView->verticalHeader()->hide();
+    m_tableView->setShowGrid(false);
+    m_tableView->setSortingEnabled(true);
+    m_tableView->setWordWrap(false);
+    m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_tableView->resizeRowsToContents();
+    m_tableView->setAlternatingRowColors(true);
+    m_tableView->sortByColumn(0, Qt::DescendingOrder);
+
+    proxyModel->setSourceModel(model);
+    m_tableView->setModel(proxyModel);
 }
 
 History::~History()
 {
 }
 
+
 // Read history from XML file
 void History::readHistory()
 {
      QFile file;
-     file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
+     file.setFileName(QDir::homePath()+"/.RapidDownHistory.xml");
      if (!file.open(QIODevice::ReadOnly))
      {
          /*QMessageBox::warning(this, tr("Download History"),
@@ -80,7 +95,6 @@ void History::readHistory()
         else if (xmlReader.isEndElement() && id != currentId)
         {
             readHistoryItem(date, fileName, fileSize, url);
-
             currentId = id;
         }
     }
@@ -92,29 +106,25 @@ void History::readHistory()
     }
 }
 
-// Create QTableWidgetItem to the given item
+// Create QAbstractItemModel to the given item
 void History::readHistoryItem(QString date, QString fileName, QString fileSize, QString url)
 {
     // Convert the Unix timestamp to date
     QDateTime dateTime;dateTime.setTime_t(date.toUInt());
     date = dateTime.toString("dd/MM/yyyy hh:mm:ss");
 
-    QTableWidgetItem *formatItem = new QTableWidgetItem(1);
-    formatItem->setFlags(Qt::ItemIsEnabled);
-    formatItem->setTextAlignment(Qt::AlignTop | Qt::AlignLeft);
-    int row = m_tableWidget->rowCount();
-    m_tableWidget->insertRow(row);
-    m_tableWidget->setItem(row, 0, new QTableWidgetItem(date));
-    m_tableWidget->setItem(row, 1, new QTableWidgetItem(fileName));
-    m_tableWidget->setItem(row, 2, new QTableWidgetItem(fileSize));
-    m_tableWidget->setItem(row, 3, new QTableWidgetItem(url));
+    model->insertRow(0);
+    model->setData(model->index(0, 0), date);
+    model->setData(model->index(0, 1), fileName);
+    model->setData(model->index(0, 2), fileSize);
+    model->setData(model->index(0, 3), url);
 }
 
 // Write history into XML file
 void History::writeHistory()
 {
     QFile file;
-    file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
+    file.setFileName(QDir::homePath()+"/.RapidDownHistory.xml");
     if (!file.open(QIODevice::WriteOnly))
     {
         QMessageBox::warning(this, tr("Download History"),
@@ -129,14 +139,14 @@ void History::writeHistory()
     xmlWriter.writeStartDocument();
     xmlWriter.writeStartElement("history");
 
-    for (int i = 0; i < m_tableWidget->rowCount(); ++i)
+    for (int i = 0; i < model->rowCount(); ++i)
     {
         xmlWriter.writeStartElement("file");
         QString str;
         xmlWriter.writeAttribute("id", str.setNum(i+1));
 
-        for (int j = 0; j < m_tableWidget->columnCount(); ++j)
-            writeHisoryItem(m_tableWidget->item( i, j));
+        for (int j = 0; j < model->columnCount(); ++j)
+            writeHisoryItem(model->item( i, j));
 
         xmlWriter.writeEndElement();
     }
@@ -146,7 +156,7 @@ void History::writeHistory()
 }
 
 // Write the given item into XML file
-void History::writeHisoryItem(QTableWidgetItem *item)
+void History::writeHisoryItem(QStandardItem *item)
 {
     if(item->column() == 0)
     {

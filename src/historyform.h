@@ -22,7 +22,6 @@
 #ifndef HISTORYFORM_H
 #define HISTORYFORM_H
 
-//#include <QDialog>
 #include <QtGui>
 #include "ui_historyForm.h"
 
@@ -33,18 +32,21 @@ class History : public QDialog, private Ui::historyWidget
 public:
     History(QWidget* parent = 0, Qt::WFlags fl = 0 );
     void readHistoryItem(QString date, QString fileName, QString fileSize, QString url);
-    void writeHisoryItem(QTableWidgetItem *item);
+    void writeHisoryItem(QStandardItem *item);
     void readHistory();
     void writeHistory();
     ~History();
 
-public slots:
+private slots:
 
 protected:
 
 private:
     QXmlStreamWriter xmlWriter;
     QXmlStreamReader xmlReader;
+
+    SortFilterProxyModel *proxyModel;
+    QStandardItemModel *model;
 };
 
 #endif

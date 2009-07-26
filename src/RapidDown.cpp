@@ -1061,8 +1061,7 @@ void RapidDown::updateName()
         if ( downloadRuns == true )
             return;
 
-    //if (( m_durl->text().contains( "rapidshare.com" ) ) )
-    if (( !m_durl->text().isEmpty() ) )
+    if (( m_durl->text().contains( "rapidshare.com" ) ) )
     {
         m_startDown->setEnabled( true );
         startDownAct->setEnabled( true );
@@ -1114,7 +1113,7 @@ void RapidDown::showHisory()
     historyDialog.show();
     if ( historyDialog.exec() )
     {
-        //
+
     }
 }
 

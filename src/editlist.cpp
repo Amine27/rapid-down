@@ -351,8 +351,8 @@ void EditList::paste()
 
     for ( QStringList::Iterator i = lst.begin(); i != lst.end(); ++i )
     {
-        //if (( *i ).contains( "rapidshare.com" ) ) // later list of servers
-        //{
+        if (( *i ).contains( "rapidshare.com" ) ) // later list of servers
+        {
             // exists in list?
             bool found;
             found = false;
@@ -370,7 +370,7 @@ void EditList::paste()
                 continue;
 
             listWidget->addItem( *i );
-        //}
+        }
     }
 
     selectInTable( UNSELECT_ALL );
