@@ -45,12 +45,12 @@ History::History(QWidget* parent, Qt::WFlags fl)
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_tableView->resizeRowsToContents();
     m_tableView->setAlternatingRowColors(true);
-    m_tableView->sortByColumn(0, Qt::DescendingOrder);
 
     proxyModel->setSourceModel(model);
     m_tableView->setModel(proxyModel);
 
     connect(m_findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(findHundler(QString)));
+    connect(m_filter, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterHundler(QString)));
     connect(m_clearHistory, SIGNAL(clicked()), this, SLOT(clearHistory()));
 
     file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
@@ -106,6 +106,9 @@ void History::readHistory()
         qDebug() << "Error";
         return;
     }
+
+    m_tableView->sortByColumn(0, Qt::DescendingOrder);
+    file.close();
 }
 
 // Create QAbstractItemModel to the given item
@@ -154,6 +157,7 @@ void History::writeHistory()
 
     xmlWriter.writeEndDocument();
 
+    file.close();
 }
 
 // Write the given item into XML file
