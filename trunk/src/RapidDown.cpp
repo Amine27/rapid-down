@@ -426,11 +426,11 @@ void RapidDown::readSettings()
     QSettings setting( tr( "RapidDown", "Rapidshare Downloader" ) );
 
     pref.homeSettings = setting.value( "dhome", QDir::homePath() ).toString();
-    pref.urlListFileName = setting.value( "durls", QDir::currentPath() + "/RapidDownl.urls" ).toString();
+    pref.urlListFileName = setting.value( "durls", QDir::currentPath() + "/RapidDown.urls" ).toString();
 
     if ( QFile::exists( pref.urlListFileName ) == false )   // if file name with error
     {
-        QString name = QDir::currentPath() + "/RapidDownl.urls";
+        QString name = QDir::currentPath() + "/RapidDown.urls";
         setting.setValue( "durls", name );
         pref.urlListFileName = name;
     }
@@ -616,10 +616,17 @@ void RapidDown::startDown()
 
         QFile file;
         QString filename, name;
-        filename = rurl;
-        name = filename.mid( filename.lastIndexOf( '/' ) + 1 );
+        downFileURL = filename = rurl;
+        name = QUrl::fromEncoded(filename.mid( filename.lastIndexOf( '/' ) + 1 ).toAscii()).toString(); // URL format to string
+
+        downFileNameAbr = downFileName = name;
+        if(downFileNameAbr.count() > 25)
+        {
+            downFileNameAbr.resize(22);
+            downFileNameAbr.append("...");
+        }
+
         name = folder + name;
-        m_durl->setText( filename );
         file.setFileName( filename );
         m_name->setText( name );
         QDir::setCurrent( folder );
@@ -706,9 +713,6 @@ void RapidDown::processFinished( int exitCode, QProcess::ExitStatus exitStatus )
     {
         if ( exitCode ==0 )
         {
-            downFileURL = m_durl->text();
-            downFileName = m_durl->text().section( '/', -1 );  // str == "file.zip"
-
             if( !isVisible() && pref.showPopups )
                 m_trayIcon->finished( downFileName, m_downloadedMB->text() );
 
@@ -719,7 +723,7 @@ void RapidDown::processFinished( int exitCode, QProcess::ExitStatus exitStatus )
             m_eta->setText( "Finishing in:" );
             m_downloadedMB->setText( "Downloaded MBytes:" );
 
-            // Write downloaded file to the history
+            // Write downloaded file to history
             QString date;
             date.setNum(QDateTime::currentDateTime().toTime_t());
             History historyDialog;
@@ -1009,9 +1013,7 @@ void RapidDown::displayProgressMsg()
         if ( !eta.isEmpty() )
             m_eta->setText( "Finishing in: " + eta );
 
-
         m_trayIcon->setTrayIconStats(downFileNameAbr, speed, eta, downloaded, progress);
-
     }
 }
 
@@ -1061,8 +1063,7 @@ void RapidDown::updateName()
         if ( downloadRuns == true )
             return;
 
-    //if (( m_durl->text().contains( "rapidshare.com" ) ) )
-    if (( !m_durl->text().isEmpty() ) )
+    if (( m_durl->text().contains( "rapidshare.com" ) ) )
     {
         m_startDown->setEnabled( true );
         startDownAct->setEnabled( true );
@@ -1075,18 +1076,7 @@ void RapidDown::updateName()
 
         if ( m_durl->text().count() > 25 )
         {
-            downFileURL = m_durl->text();
-            downFileName = m_durl->text().section( '/', -1 );  // str == "file.zip"
-            m_name->setText( downFileName );
-
-            downFileNameAbr = downFileName;
-
-            if(downFileNameAbr.count() > 25)
-            {
-                downFileNameAbr.resize(22);
-                downFileNameAbr.append("...");
-            }
-
+            m_name->setText( QUrl::fromEncoded(m_durl->text().section( '/', -1 ).toAscii()).toString() );
         }
     }
     else
