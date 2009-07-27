@@ -50,7 +50,6 @@ History::History(QWidget* parent, Qt::WFlags fl)
     m_tableView->setModel(proxyModel);
 
     connect(m_findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(findHundler(QString)));
-    connect(m_filter, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(filterHundler(QString)));
     connect(m_clearHistory, SIGNAL(clicked()), this, SLOT(clearHistory()));
 
     file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
