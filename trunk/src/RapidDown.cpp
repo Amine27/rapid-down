@@ -623,7 +623,7 @@ void RapidDown::startDown()
         if(downFileNameAbr.count() > 25)
         {
             downFileNameAbr.resize(22);
-            downFileNameAbr.append("...");
+            downFileNameAbr.append("..." + downFileName.right(8) );
         }
 
         name = folder + name;
