@@ -714,7 +714,7 @@ void RapidDown::processFinished( int exitCode, QProcess::ExitStatus exitStatus )
         if ( exitCode ==0 )
         {
             if( !isVisible() && pref.showPopups )
-                m_trayIcon->finished( downFileName, m_downloadedMB->text() );
+                m_trayIcon->finished( downFileNameAbr, m_downloadedMB->text() );
 
             msg = tr( "Download successfully completed." );
 
@@ -726,10 +726,10 @@ void RapidDown::processFinished( int exitCode, QProcess::ExitStatus exitStatus )
             // Write downloaded file to history
             QString date;
             date.setNum(QDateTime::currentDateTime().toTime_t());
-            History historyDialog;
-            historyDialog.readHistory();
-            historyDialog.readHistoryItem(date, downFileName, downloaded, downFileURL);
-            historyDialog.writeHistory();
+            historyDialog = new History(this);
+            historyDialog->readHistory();
+            historyDialog->readHistoryItem(date, downFileName, downloaded, downFileURL);
+            historyDialog->writeHistory();
         }
         else //if ( exitCode > 0 )
         {
@@ -1098,14 +1098,9 @@ void RapidDown::saveSettings()
 
 void RapidDown::showHisory()
 {
-    History historyDialog;
-
-    historyDialog.readHistory();
-    historyDialog.show();
-    if ( historyDialog.exec() )
-    {
-
-    }
+    historyDialog = new History(this);
+    historyDialog->readHistory();
+    historyDialog->show();
 }
 
 void RapidDown::about()
@@ -1113,4 +1108,3 @@ void RapidDown::about()
     aboutForm aboutProgram;
     aboutProgram.exec();
 }
-

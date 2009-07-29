@@ -62,7 +62,7 @@ void TrayIcon::setTrayIconStats(QString fileName, QString speed, QString eta, QS
 
 void TrayIcon::finished(QString fileName, QString DownloadedSize)
 {
-    QString msg = QString("%1 has completed downloading."
+    QString msg = QString("\"%1\" was downloaded successfully."
                     "\n%2").arg(
                     fileName,
                     DownloadedSize);
@@ -72,7 +72,7 @@ void TrayIcon::finished(QString fileName, QString DownloadedSize)
 
 void TrayIcon::Allfinished(int downloadedUrls)
 {
-    QString msg = QString("All downloads has been finished (%1 files).").arg(
+    QString msg = QString("All downloads has been finished successfully (%1 files).").arg(
             downloadedUrls);
 
     trayIcon->showMessage("Finished", msg);
