@@ -28,7 +28,6 @@
 #include <QList>
 #include <QMenuBar>
 
-
 #include "RapidDown.h"
 #include "ui_editList.h"
 

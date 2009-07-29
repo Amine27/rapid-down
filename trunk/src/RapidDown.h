@@ -77,6 +77,7 @@ struct Settings
 #include "ui_mainForm.h"
 
 class TrayIcon;
+class History;
 
 class RapidDown : public QMainWindow, private Ui::MainForm
 {
@@ -149,6 +150,7 @@ private :
     QProcess *process[MAXDOWNLOADS];
     short runProcesses;
     EditList *eList;
+    History *historyDialog;
     QString appDir;
     QString downFileNameAbr;
     QString downFileName;

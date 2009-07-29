@@ -24,6 +24,9 @@
 
 #include <QtGui>
 #include "ui_historyForm.h"
+#include "RapidDown.h"
+
+class RapidDown;
 
 class History : public QDialog, private Ui::historyWidget
 {
@@ -37,9 +40,22 @@ public:
     void writeHistory();
     ~History();
 
+private:
+    void setupContextMenu();
+    void createActions();
+    void readSettings();
+
 private slots:
     void findHundler(QString);
     void clearHistory();
+    void copyLink();
+    void copyFileName();
+    void delItem();
+    void delFile();
+    void openUrl();
+
+protected slots:
+    virtual void reject();
 
 protected:
 
@@ -51,6 +67,21 @@ private:
 
     QSortFilterProxyModel *proxyModel;
     QStandardItemModel *model;
+
+    QItemSelectionModel *selectionModel;
+    QModelIndexList indexes;
+    QModelIndex index;
+
+    QString downloadDir;
+
+    QAction *copyLinkAct;
+    QAction *copyValueAct;
+    QAction *deleteAct;
+    QAction *delFileAct;
+    QAction *openUrlAct;
+    QAction *separator;
+    QClipboard *clipboard;
+    RapidDown *father;
 };
 
 #endif

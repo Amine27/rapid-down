@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 
+#include "RapidDown.h"
 #include "historyform.h"
 
 History::History(QWidget* parent, Qt::WFlags fl)
@@ -30,7 +31,6 @@ History::History(QWidget* parent, Qt::WFlags fl)
     proxyModel->setDynamicSortFilter(true);
 
     model = new QStandardItemModel(0, 4, parent);
-
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("Date"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("File name"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("Size"));
@@ -49,14 +49,77 @@ History::History(QWidget* parent, Qt::WFlags fl)
     proxyModel->setSourceModel(model);
     m_tableView->setModel(proxyModel);
 
+    createActions();
+    setupContextMenu();
+
+    father = (RapidDown*)parent;
+    clipboard = father->clipboard;
+
+    file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
+    selectionModel = m_tableView->selectionModel();
+
     connect(m_findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(findHundler(QString)));
     connect(m_clearHistory, SIGNAL(clicked()), this, SLOT(clearHistory()));
 
-    file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
+    readSettings();
 }
 
 History::~History()
 {
+}
+
+void History::reject()
+{
+    QDialog::reject();
+}
+
+void History::createActions()
+{
+    copyLinkAct = new QAction( tr( "Copy Download &Link(s)" ), this );
+    copyLinkAct->setIcon( QIcon( ":data/edit-copy.png" ) );
+    copyLinkAct->setShortcut( Qt::CTRL | Qt::Key_C );
+    connect( copyLinkAct, SIGNAL( triggered() ), this, SLOT( copyLink() ) );
+
+    copyValueAct = new QAction( tr( "Copy Download File &Name(s)" ), this );
+    copyValueAct->setIcon( QIcon( ":data/edit-copy.png" ) );
+    copyValueAct->setShortcut( Qt::CTRL | Qt::SHIFT | Qt::Key_C );
+    connect( copyValueAct, SIGNAL( triggered() ), this, SLOT( copyFileName() ) );
+
+    openUrlAct = new QAction( tr( "Open in &WebBrowser" ), this );
+    openUrlAct->setIcon( QIcon( ":data/window-new.png" ) );
+    openUrlAct->setShortcut( Qt::CTRL | Qt::Key_W );
+    connect( openUrlAct, SIGNAL( triggered() ), this, SLOT( openUrl() ) );
+
+    separator = new QAction( this );
+    separator->setSeparator( true );
+
+    delFileAct = new QAction( tr( "&Delete Downloaded File(s)" ), this );
+    delFileAct->setIcon( QIcon( ":data/edit-delete.png" ) );
+    delFileAct->setShortcut( Qt::CTRL | Qt::SHIFT | Qt::Key_D );
+    connect( delFileAct, SIGNAL( triggered() ), this, SLOT( delFile() ) );
+
+    deleteAct = new QAction( tr( "&Remove Download Link(s)" ), this );
+    deleteAct->setIcon( QIcon( ":data/archive-remove.png" ) );
+    deleteAct->setShortcut( Qt::CTRL | Qt::Key_D );
+    connect( deleteAct, SIGNAL( triggered() ), this, SLOT( delItem() ) );
+}
+
+void History::setupContextMenu()
+{
+    addAction( copyLinkAct );
+    addAction( copyValueAct );
+    addAction( openUrlAct );
+    addAction( separator );
+    addAction( deleteAct );
+    addAction( delFileAct );
+
+    setContextMenuPolicy( Qt::ActionsContextMenu );
+}
+
+void History::readSettings()
+{
+    QSettings setting( tr( "RapidDown", "Rapidshare Downloader" ) );
+    downloadDir = setting.value( "dhome", QDir::homePath() ).toString();
 }
 
 // Read history from XML file
@@ -102,11 +165,15 @@ void History::readHistory()
 
     if (xmlReader.hasError())
     {
-        qDebug() << "Error";
+        QMessageBox::warning(this, tr("Read History"),
+                              tr("Cannot read file %1:\n%2.")
+                              .arg(file.fileName())
+                              .arg(xmlReader.errorString()));
         return;
     }
 
     m_tableView->sortByColumn(0, Qt::DescendingOrder);
+    model->sort(0, Qt::DescendingOrder);
     file.close();
 }
 
@@ -215,4 +282,114 @@ void History::clearHistory()
     }
 
     model->removeRows(0, model->rowCount());
+}
+
+void History::copyLink()
+{
+    QString str;
+    indexes = selectionModel->selectedRows();
+
+    for(int i=0; i<indexes.size(); i++)
+    {
+        index = indexes.at(i);
+        if(selectionModel->isSelected(index))
+        {
+            str += model->item(index.row(), 3)->text();
+            str +=  "\n";
+        }
+    }
+    clipboard->setText( str, QClipboard::Clipboard );
+}
+
+void History::copyFileName()
+{
+    QString str;
+    indexes = selectionModel->selectedRows();
+
+    for(int i=0; i<indexes.size(); i++)
+    {
+        index = indexes.at(i);
+        if(selectionModel->isSelected(index))
+        {
+            str += model->item(index.row(), 1)->text();
+            str +=  "\n";
+        }
+    }
+    clipboard->setText( str, QClipboard::Clipboard );
+}
+
+void History::delItem()
+{
+    if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete" ), tr( "Delete downloads from list?" ), QMessageBox::Yes, QMessageBox::No ) )
+        return;
+
+    indexes = selectionModel->selectedRows();
+
+    for(int i=0; i<indexes.size();)
+    {
+        index = indexes.at(i);
+        if(selectionModel->isSelected(index))
+        {
+            model->removeRow(index.row());
+        }
+        else
+            i++;
+    }
+
+    if(!indexes.isEmpty())
+        writeHistory();
+}
+
+void History::delFile()
+{
+    if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete" ), tr( "Delete downloaded file?" ), QMessageBox::Yes, QMessageBox::No ) )
+        return;
+
+    QString str;
+    QFile delFile;
+
+    indexes = selectionModel->selectedRows();
+
+    for(int i=0; i<indexes.size();)
+    {
+        index = indexes.at(i);
+        if(selectionModel->isSelected(index))
+        {
+            str = model->item(index.row(), 1)->text();
+            qDebug() << "Delete file :" << downloadDir + str;
+
+            delFile.setFileName(downloadDir + str);
+            if (!delFile.remove())
+            {
+                QMessageBox::warning(this, tr("Clear History"),
+                                      tr("Cannot remove file %1:\n%2.")
+                                      .arg(delFile.fileName())
+                                      .arg(delFile.errorString()));
+                return;
+            }
+            else
+                model->removeRow(index.row());
+        }
+        else
+            i++;
+    }
+
+    if(!indexes.isEmpty())
+        writeHistory();
+}
+
+void History::openUrl()
+{
+    QString str;
+    indexes = selectionModel->selectedRows();
+
+    for(int i=0; i<indexes.size(); i++)
+    {
+        index = indexes.at(i);
+        if(selectionModel->isSelected(index))
+        {
+            str = model->item(index.row(), 3)->text();
+            QDesktopServices::openUrl( QUrl::fromEncoded ( str.toAscii() ) ) ;
+        }
+    }
 }

@@ -318,7 +318,7 @@ void EditList::cut()
     QString str;
     if ( sets->confirmDelete == true )
     {
-        if ( 1 == QMessageBox::question( this, tr( "Cut" ), tr( "Cut links from list?" ), tr( "Yes" ), tr( "No" ) ) )
+        if ( QMessageBox::No == QMessageBox::question( this, tr( "Cut" ), tr( "Cut links from list?" ), QMessageBox::Yes, QMessageBox::Yes ) )
             return;
     }
 
@@ -385,7 +385,7 @@ void EditList::del()
 {
     if ( sets->confirmDelete == true )
     {
-        if ( 1 == QMessageBox::question( this, tr( "Delete" ), tr( "Delete links from list?" ), tr( "Yes" ), tr( "No" ) ) )
+        if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete" ), tr( "Delete links from list?" ), QMessageBox::Yes, QMessageBox::Yes ) )
             return;
     }
 
