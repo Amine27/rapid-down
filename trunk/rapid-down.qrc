@@ -20,7 +20,9 @@
         <file>data/cancel.png</file>
         <file>data/open-folder.png</file>
         <file>data/list-add.png</file>
-		<file>data/history.png</file>
-		<file>data/clear-history.png</file>
+        <file>data/history.png</file>
+        <file>data/clear-history.png</file>
+        <file>data/window-new.png</file>
+        <file>data/archive-remove.png</file>
     </qresource>
 </RCC>
