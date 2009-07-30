@@ -55,7 +55,7 @@ History::History(QWidget* parent, Qt::WFlags fl)
     father = (RapidDown*)parent;
     clipboard = father->clipboard;
 
-    file.setFileName(QDir::homePath()+"/RapidDownHistory.xml");
+    file.setFileName(QDir::homePath()+"/.RapidDownHistory.xml");
     selectionModel = m_tableView->selectionModel();
 
     connect(m_findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(findHundler(QString)));
@@ -294,7 +294,7 @@ void History::copyLink()
         index = indexes.at(i);
         if(selectionModel->isSelected(index))
         {
-            str += model->item(index.row(), 3)->text();
+            str += proxyModel->index(index.row(), 3).data().toString();
             str +=  "\n";
         }
     }
@@ -311,7 +311,7 @@ void History::copyFileName()
         index = indexes.at(i);
         if(selectionModel->isSelected(index))
         {
-            str += model->item(index.row(), 1)->text();
+            str += proxyModel->index(index.row(), 1).data().toString();
             str +=  "\n";
         }
     }
@@ -330,7 +330,7 @@ void History::delItem()
         index = indexes.at(i);
         if(selectionModel->isSelected(index))
         {
-            model->removeRow(index.row());
+            proxyModel->removeRow(index.row());
         }
         else
             i++;
@@ -355,7 +355,7 @@ void History::delFile()
         index = indexes.at(i);
         if(selectionModel->isSelected(index))
         {
-            str = model->item(index.row(), 1)->text();
+            str = proxyModel->index(index.row(), 1).data().toString();
             qDebug() << "Delete file :" << downloadDir + str;
 
             delFile.setFileName(downloadDir + str);
@@ -368,7 +368,7 @@ void History::delFile()
                 return;
             }
             else
-                model->removeRow(index.row());
+                proxyModel->removeRow(index.row());
         }
         else
             i++;
@@ -388,7 +388,7 @@ void History::openUrl()
         index = indexes.at(i);
         if(selectionModel->isSelected(index))
         {
-            str = model->item(index.row(), 3)->text();
+            str = proxyModel->index(index.row(), 3).data().toString();
             QDesktopServices::openUrl( QUrl::fromEncoded ( str.toAscii() ) ) ;
         }
     }
