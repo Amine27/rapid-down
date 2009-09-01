@@ -17,40 +17,6 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QComboBox" name="m_filter">
-       <item>
-        <property name="text">
-         <string>All Downloads</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Today</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Yesterday</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>In the previous 7 days</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>in the previous 31 days</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>in this calendar month</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -64,9 +30,16 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="m_findLabel">
+       <property name="text">
+        <string>Find:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLineEdit" name="m_findEdit">
        <property name="text">
-        <string>Find...</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -83,7 +56,7 @@
         <string>Clera History</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../rapid-down.qrc">
          <normaloff>:/data/clear-history.png</normaloff>:/data/clear-history.png</iconset>
        </property>
       </widget>
@@ -107,7 +80,7 @@
         <string>Close</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../rapid-down.qrc">
          <normaloff>:/data/close.png</normaloff>:/data/close.png</iconset>
        </property>
       </widget>
@@ -116,7 +89,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../rapid-down.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>m_close</sender>
