@@ -1,0 +1,71 @@
+#! /bin/bash
+
+echo
+
+if [[ $UID != 0 ]]
+then
+	echo 'Please run this script as root / sudo in order to install Rapidshare Downloader.'
+	echo
+	exit 0
+fi
+
+menuWhere() {
+	echo -n " > "
+	read input
+	
+	case $input in
+	a|/usr/local)
+		DIR="/usr/local"
+		;;
+	b|/usr/share)
+		DIR="/usr/share"
+		;;
+	c|/opt)
+		DIR="/opt"
+		;;
+	*)
+		menuWhere
+		;;
+	esac
+}
+
+echo "Welcome to the Rapidshare Downloader Installation."
+echo
+
+if [[ $1 == '/usr/local' ]] || [[ $1 == '/usr/share' ]] || [[ $1 == '/opt' ]]
+then
+	DIR=$1
+else
+	echo "Please specify where you would like to install it."
+	echo " a) /usr/local"
+	echo " b) /usr/share"
+	echo " c) /opt"
+	menuWhere
+	echo
+fi
+
+if  [[ "$2" != "" ]]
+then
+	DIR=$2/$1
+fi
+
+
+# Create a folder for RapidDown
+echo -n "Creating application directory... "
+mkdir $DIR/RapidDown -p
+echo "$DIR/RapidDown"
+
+# Copy everything needed there
+echo -n "Copying application data... "
+cp -r -p src/ data/ readme copying $DIR/RapidDown
+cp -r -p bin/rapid-down /usr/bin/
+cp -r -p data/rapid-down.desktop /usr/share/applications
+cp -r -p data/rapid-down.png /usr/share/pixmaps
+echo "Done."
+
+echo
+echo "The installation ended successfully. Thanks for choosing Rapidshare Downloader!"
+echo "Now you can run this program with \"rapid-down\"."
+echo
+
+exit 1
